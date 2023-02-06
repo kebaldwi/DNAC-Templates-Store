@@ -1,0 +1,36 @@
+[
+  {
+    "name": "AutoConf-Configuration",
+    "description": "AutoConf Configuration to enable AutoConf on Target and add parameter map for templates. Please note must be after interface templates are added to Target.",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# AutoConf Configurations #}\n!\n{# Enabling Autoconf on switch with interactive command #}\n#INTERACTIVE\nautoconf enable<IQ>yes<R>y\n#END_INTERACTIVE \n!\n{# Augmenting existing hidden parameter map with modifications #}\nparameter-map type subscriber attribute-to-service BUILTIN_DEVICE_TO_TEMPLATE\n 10 map device-type regex \"Cisco-IP-Phone\"\n  20 interface-template WORKSTATION\n 20 map device-type regex \"Cisco-IP-Camera\"\n  20 interface-template ACCESS_POINT\n 60 map device-type regex \"Cisco-AIR-AP\"\n  20 interface-template ACCESS_POINT\n 70 map device-type regex \"Cisco-AIR-LAP\"\n  20 interface-template ACCESS_POINT\n 110 map device-type regex \"Cisco-CAT-LAP\"\n  10 interface-template ACCESS_POINT\n 120 map oui eq \"00.24.9b\"\n  10 interface-template WORKSTATION \n!\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# AutoConf Configurations #}\n!\n{# Enabling Autoconf on switch with interactive command #}\n#INTERACTIVE\nautoconf enable<IQ>yes<R>y\n#END_INTERACTIVE \n!\n{# Augmenting existing hidden parameter map with modifications #}\nparameter-map type subscriber attribute-to-service BUILTIN_DEVICE_TO_TEMPLATE\n 10 map device-type regex \"Cisco-IP-Phone\"\n  20 interface-template WORKSTATION\n 20 map device-type regex \"Cisco-IP-Camera\"\n  20 interface-template ACCESS_POINT\n 60 map device-type regex \"Cisco-AIR-AP\"\n  20 interface-template ACCESS_POINT\n 70 map device-type regex \"Cisco-AIR-LAP\"\n  20 interface-template ACCESS_POINT\n 110 map device-type regex \"Cisco-CAT-LAP\"\n  10 interface-template ACCESS_POINT\n 120 map oui eq \"00.24.9b\"\n  10 interface-template WORKSTATION \n!\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1674762318963,
+    "lastUpdateTime": 1675550134528,
+    "latestVersionTime": 1674762318963,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "00c79935-7a03-4d71-b3ef-cf58412bb44e",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

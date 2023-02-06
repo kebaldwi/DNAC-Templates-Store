@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Sensitive-Info",
+    "description": "Sensitive information is Separated from Configurations for ease of management. This is programmed on the switch pragmatically from these objects.",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# Dictionaries of SNMP V2 Community Strings #}\n{% set snmpCommunityStrings = [\n  {'string':'EXAMPLE1'},\n  {'string':'EXAMPLE2'}\n  ]%}\n\n{# Dictionaries of User information #}\n{% set users = [\n  {'name':'kbaldwin','priv':'15','key':'$9$DwFGXgdsukL4qE$7LI.Kq6vijfo/BkM53McdTrlfS.ou4CmOQ6zYH8iba2'},\n  {'name':'plukasze','priv':'3','key':'$9$DwFGXgdsukL4qE$7LI.Kq6vijfo/BkM53McdTrlfS.ou4CmOQ6zYH8iba2'}\n  ]%}\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# Dictionaries of SNMP V2 Community Strings #}\n{% set snmpCommunityStrings = [\n  {'string':'EXAMPLE1'},\n  {'string':'EXAMPLE2'}\n  ]%}\n\n{# Dictionaries of User information #}\n{% set users = [\n  {'name':'kbaldwin','priv':'15','key':'$9$DwFGXgdsukL4qE$7LI.Kq6vijfo/BkM53McdTrlfS.ou4CmOQ6zYH8iba2'},\n  {'name':'plukasze','priv':'3','key':'$9$DwFGXgdsukL4qE$7LI.Kq6vijfo/BkM53McdTrlfS.ou4CmOQ6zYH8iba2'}\n  ]%}\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1674762318823,
+    "lastUpdateTime": 1675548056908,
+    "latestVersionTime": 1674762318823,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "ed52e56e-055a-40f3-84d2-91697a95298b",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

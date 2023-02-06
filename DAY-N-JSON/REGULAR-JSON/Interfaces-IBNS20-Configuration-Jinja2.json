@@ -1,0 +1,342 @@
+[
+  {
+    "name": "Interfaces-IBNS2.0-Configuration",
+    "description": "IBNS2.0 Configuration for VLANs and Host facing ports.",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# Interface Configurations #}\n{% include \"DNAC-Templates-Samples/Interfaces-Macros\" %}\n{% include \"DNAC-Templates-Samples/VLAN-Configuration\" %}\n{% include \"DNAC-Templates-Samples/IBNS2.0-Configuration\" %}\n!\n!\n{% set vlanArray = [] %}\n{% if Site == \"A\" %}\n  {{ configure_vlans(SiteAvlans) }}\n  {{ search_vlans(SiteAvlans) }}\n  {{ configure_cts(SiteAvlans) }}\n{% elif Site == \"B\" %}\n  {{ configure_vlans(SiteBvlans) }}\n  {{ search_vlans(SiteBvlans) }}\n  {{ configure_cts(SiteBvlans) }}\n{% endif %}\n!\n{# Determine whether target is Dual or Single Uplink Target #}\n{% set uplink_portarray = [] %}\n{% for interface in __interface %}\n  {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n    {% do uplink_portarray.append(interface.portName) %}\n  {% endif %}\n{% endfor %}\n!\n{% if uplink_portarray | length == 2 %}\n  {{ configure_stp_dualuplink(vlanArray) }}\n{% elif uplink_portarray | length == 1 %}\n  {{ configure_stp_singleuplink(vlanArray) }}\n{% endif %}\n!\n{{ ibns_baseconfig(vlanArray[1]) }}\n{{ ibns_accesspoint(vlanArray[0]) }}\n{{ ibns_flexaccesspoint(vlanArray[0], vlanArray[1], vlanArray[2], vlanArray[3]) }} \n{{ ibns_workstation(vlanArray[1], vlanArray[2]) }}\n{{ ibns_guest(vlanArray[3]) }} \n!\n{# Interface Interations #}\n!\n{# System Variable example interfaces in one logical code construct #}\n{% for interface in __interface %}\n  {% if interface.interfaceType == \"Physical\" && interface.portName.replaceAll(\"(^[a-zA-Z]+).*\",\"$1\") == \"GigabitEthernet\"  %}\n    {% if interface.portName.replaceAll(\"(^[a-zA-Z]+.).*\", \"$1\") != \"GigabitEthernet0\" %}\n      {% if interface.portName.replaceAll(\"^[a-zA-Z]+(\\\\d+)/(\\\\d+)/(\\\\d+)\", \"$2\") != 1 %}\n        interface {{ interface.portName }}\n          {{ ibns_baseconf_interface() }}\n      {% endif %}\n    {% endif %}\n  {% endif %}\n{% endfor %}\n!\ninterface GigabitEthernet0/0\n no ip address\n shutdown\n!\n{#- Automated Script for cts manual disruptive config -#}\n{#- This will always ensure the uplink get the cts manual for with  -#}\n{#- timed self deleting EEM script  -#}\nevent manager applet POST_CTS_MANUAL\n event timer countdown time 30\n action 1.0 cli command \"enable\"\n action 1.1 cli command \"config t\"\n action 2.0 cli command \"interface range {{ uplink_portarray|join(',') }}\"\n action 2.1 cli command \"cts manual\"\n action 2.2 cli command \"policy static sgt 2 trusted\"\n action 2.3 cli command \"no event manager applet POST_CTS_MANUAL\"\n action 2.4 cli command \"end\"\n action 2.5 cli command \"wr\"\n action 2.6 cli command \"exit\"\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [
+      {
+        "parameterName": "__interface",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": true,
+        "notParam": false,
+        "paramArray": true,
+        "instructionText": null,
+        "group": null,
+        "order": 2,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": "MULTI_SELECT",
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": null
+      },
+      {
+        "parameterName": "voice_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 5,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": null
+      },
+      {
+        "parameterName": "guest_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 6,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": null
+      },
+      {
+        "parameterName": "vlan_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 3,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": null
+      },
+      {
+        "parameterName": "Site",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": "The Letter denotes the VLAN Schema\n         AP, Data, Voice, Guest, Disabled\nA = 10,20,30,40,99\nB = 20,30,40,50,99",
+        "required": true,
+        "notParam": false,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 1,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": "SINGLE_SELECT",
+          "selectionValues": {
+            "A": "A",
+            "B": "B"
+          },
+          "defaultSelectedValues": [
+            "A"
+          ],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": "VLAN Schema for Site"
+      },
+      {
+        "parameterName": "data_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 4,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "displayName": null
+      }
+    ],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# Interface Configurations #}\n{% include \"DNAC-Templates-Samples/Interfaces-Macros\" %}\n{% include \"DNAC-Templates-Samples/VLAN-Configuration\" %}\n{% include \"DNAC-Templates-Samples/IBNS2.0-Configuration\" %}\n!\n!\n{% set vlanArray = [] %}\n{% if Site == \"A\" %}\n  {{ configure_vlans(SiteAvlans) }}\n  {{ search_vlans(SiteAvlans) }}\n  {{ configure_cts(SiteAvlans) }}\n{% elif Site == \"B\" %}\n  {{ configure_vlans(SiteBvlans) }}\n  {{ search_vlans(SiteBvlans) }}\n  {{ configure_cts(SiteBvlans) }}\n{% endif %}\n!\n{# Determine whether target is Dual or Single Uplink Target #}\n{% set uplink_portarray = [] %}\n{% for interface in __interface %}\n  {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n    {% do uplink_portarray.append(interface.portName) %}\n  {% endif %}\n{% endfor %}\n!\n{% if uplink_portarray | length == 2 %}\n  {{ configure_stp_dualuplink(vlanArray) }}\n{% elif uplink_portarray | length == 1 %}\n  {{ configure_stp_singleuplink(vlanArray) }}\n{% endif %}\n!\n{{ ibns_baseconfig(vlanArray[1]) }}\n{{ ibns_accesspoint(vlanArray[0]) }}\n{{ ibns_flexaccesspoint(vlanArray[0], vlanArray[1], vlanArray[2], vlanArray[3]) }} \n{{ ibns_workstation(vlanArray[1], vlanArray[2]) }}\n{{ ibns_guest(vlanArray[3]) }} \n!\n{# Interface Interations #}\n!\n{# System Variable example interfaces in one logical code construct #}\n{% for interface in __interface %}\n  {% if interface.interfaceType == \"Physical\" && interface.portName.replaceAll(\"(^[a-zA-Z]+).*\",\"$1\") == \"GigabitEthernet\"  %}\n    {% if interface.portName.replaceAll(\"(^[a-zA-Z]+.).*\", \"$1\") != \"GigabitEthernet0\" %}\n      {% if interface.portName.replaceAll(\"^[a-zA-Z]+(\\\\d+)/(\\\\d+)/(\\\\d+)\", \"$2\") != 1 %}\n        interface {{ interface.portName }}\n          {{ ibns_baseconf_interface() }}\n      {% endif %}\n    {% endif %}\n  {% endif %}\n{% endfor %}\n!\ninterface GigabitEthernet0/0\n no ip address\n shutdown\n!\n{#- Automated Script for cts manual disruptive config -#}\n{#- This will always ensure the uplink get the cts manual for with  -#}\n{#- timed self deleting EEM script  -#}\nevent manager applet POST_CTS_MANUAL\n event timer countdown time 30\n action 1.0 cli command \"enable\"\n action 1.1 cli command \"config t\"\n action 2.0 cli command \"interface range {{ uplink_portarray|join(',') }}\"\n action 2.1 cli command \"cts manual\"\n action 2.2 cli command \"policy static sgt 2 trusted\"\n action 2.3 cli command \"no event manager applet POST_CTS_MANUAL\"\n action 2.4 cli command \"end\"\n action 2.5 cli command \"wr\"\n action 2.6 cli command \"exit\"\n",
+    "promotedTemplateParams": [
+      {
+        "parameterName": "Site",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": "The Letter denotes the VLAN Schema\n         AP, Data, Voice, Guest, Disabled\nA = 10,20,30,40,99\nB = 20,30,40,50,99",
+        "required": true,
+        "notParam": false,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 1,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": "SINGLE_SELECT",
+          "selectionValues": {
+            "A": "A",
+            "B": "B"
+          },
+          "defaultSelectedValues": [
+            "A"
+          ],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": "VLAN Schema for Site"
+      },
+      {
+        "parameterName": "data_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 4,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": null
+      },
+      {
+        "parameterName": "guest_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 6,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": null
+      },
+      {
+        "parameterName": "__interface",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": true,
+        "notParam": false,
+        "paramArray": true,
+        "instructionText": null,
+        "group": null,
+        "order": 2,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": "MULTI_SELECT",
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": null
+      },
+      {
+        "parameterName": "voice_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 5,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": null
+      },
+      {
+        "parameterName": "vlan_number",
+        "dataType": "STRING",
+        "defaultValue": null,
+        "description": null,
+        "required": false,
+        "notParam": true,
+        "paramArray": false,
+        "instructionText": null,
+        "group": null,
+        "order": 3,
+        "customOrder": 0,
+        "selection": {
+          "selectionType": null,
+          "selectionValues": {},
+          "defaultSelectedValues": [],
+          "id": null
+        },
+        "range": [],
+        "key": null,
+        "provider": null,
+        "binding": "",
+        "id": null,
+        "displayName": null
+      }
+    ],
+    "customParamsOrder": false,
+    "createTime": 1675031438349,
+    "lastUpdateTime": 1675646745469,
+    "latestVersionTime": 1675646750971,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "028f33b0-01fd-4b89-9fe3-75392bedd46c",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

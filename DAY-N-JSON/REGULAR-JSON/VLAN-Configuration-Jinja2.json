@@ -1,0 +1,36 @@
+[
+  {
+    "name": "VLAN-Configuration",
+    "description": "VLAN Configurations that are required on Target. Various use cases, uplinks with or without port channels, spanning-tree",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# Dictionaries of VLANS per Site #}\n{% set SiteAvlans = [\n  {'vlan':'10','name':'apvlan'},\n  {'vlan':'20','name':'datavlan'},\n  {'vlan':'30','name':'voicevlan'},\n  {'vlan':'40','name':'guestvlan'},\n  {'vlan':'99','name':'disabledvlan'}\n  ]%}\n{% set SiteBvlans = [\n  {'vlan':'20','name':'apvlan'},\n  {'vlan':'30','name':'datavlan'},\n  {'vlan':'40','name':'voicevlan'},\n  {'vlan':'50','name':'guestvlan'},\n  {'vlan':'99','name':'disabledvlan'}\n  ]%}\n!\n{# MACRO VLAN DB Dependencies #}\n{% macro configure_vlans(vlanpairs)  %}\n  {% for vlanpair in vlanpairs %}\n    vlan {{ vlanpair['vlan'] }}\n    name {{ vlanpair['name'] }}\n  {% endfor %}\n{% endmacro %}\n!\n{# MACRO STP with PC Dependencies #}\n{% macro configure_stp_dualuplink(vlanpairs) %}\n  {% for interface in __interface %}\n    {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n      interface {{ interface.portName }}\n        access-session inherit disable autoconf \n    {% elif 'Port-channel' in interface.portName  %}\n      interface {{ interface.portName }} \n        switchport trunk allowed vlan add {{ vlanpairs|join(',') }}\n    {% endif %}\n  {% endfor %}\n{% endmacro %} \n!\n{# MACRO STP Dependencies #}\n{# This is an example of the configure_stp macro for a single uplink. As the ports are   #}\n{# showing prior to the portchannels it needs two logical constructs and as sort doesn't #}\n{# work. #}\n{% macro configure_stp_singleuplink(vlanpairs) %}\n  {% for interface in __interface %}\n    {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n      interface {{ interface.portName }}\n        switchport trunk allowed vlan add {{ vlanpairs|join(',') }}\n        access-session inherit disable autoconf \n    {% endif %}\n  {% endfor %}\n{% endmacro %} \n!\n{# MACRO Vlan Search Function #}\n{% macro search_vlans(vlanpairs) %}\n  {#{% set vlanArray = [] %}#}\n  {% for vlanpair in vlanpairs %}\n    {% if vlanpair['name'] == \"apvlan\" %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif vlanpair['name'] == \"datavlan\"%}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"voice\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"guest\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"disabled\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% else %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% endif %}\n  {% endfor %}\n{% endmacro %}\n!\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# Dictionaries of VLANS per Site #}\n{% set SiteAvlans = [\n  {'vlan':'10','name':'apvlan'},\n  {'vlan':'20','name':'datavlan'},\n  {'vlan':'30','name':'voicevlan'},\n  {'vlan':'40','name':'guestvlan'},\n  {'vlan':'99','name':'disabledvlan'}\n  ]%}\n{% set SiteBvlans = [\n  {'vlan':'20','name':'apvlan'},\n  {'vlan':'30','name':'datavlan'},\n  {'vlan':'40','name':'voicevlan'},\n  {'vlan':'50','name':'guestvlan'},\n  {'vlan':'99','name':'disabledvlan'}\n  ]%}\n!\n{# MACRO VLAN DB Dependencies #}\n{% macro configure_vlans(vlanpairs)  %}\n  {% for vlanpair in vlanpairs %}\n    vlan {{ vlanpair['vlan'] }}\n    name {{ vlanpair['name'] }}\n  {% endfor %}\n{% endmacro %}\n!\n{# MACRO STP with PC Dependencies #}\n{% macro configure_stp_dualuplink(vlanpairs) %}\n  {% for interface in __interface %}\n    {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n      interface {{ interface.portName }}\n        access-session inherit disable autoconf \n    {% elif 'Port-channel' in interface.portName  %}\n      interface {{ interface.portName }} \n        switchport trunk allowed vlan add {{ vlanpairs|join(',') }}\n    {% endif %}\n  {% endfor %}\n{% endmacro %} \n!\n{# MACRO STP Dependencies #}\n{# This is an example of the configure_stp macro for a single uplink. As the ports are   #}\n{# showing prior to the portchannels it needs two logical constructs and as sort doesn't #}\n{# work. #}\n{% macro configure_stp_singleuplink(vlanpairs) %}\n  {% for interface in __interface %}\n    {% if interface.portMode == \"trunk\" && interface.interfaceType == \"Physical\" %}\n      interface {{ interface.portName }}\n        switchport trunk allowed vlan add {{ vlanpairs|join(',') }}\n        access-session inherit disable autoconf \n    {% endif %}\n  {% endfor %}\n{% endmacro %} \n!\n{# MACRO Vlan Search Function #}\n{% macro search_vlans(vlanpairs) %}\n  {#{% set vlanArray = [] %}#}\n  {% for vlanpair in vlanpairs %}\n    {% if vlanpair['name'] == \"apvlan\" %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif vlanpair['name'] == \"datavlan\"%}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"voice\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"guest\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% elif \"disabled\" in vlanpair['name'] %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% else %}\n      {% do vlanArray.append(vlanpair['vlan']) %}\n    {% endif %}\n  {% endfor %}\n{% endmacro %}\n!\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1674762318565,
+    "lastUpdateTime": 1675549890168,
+    "latestVersionTime": 1674762318565,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "7691ea77-e223-454a-8a33-4611d5d2b9df",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

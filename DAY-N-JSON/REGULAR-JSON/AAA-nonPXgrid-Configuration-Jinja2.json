@@ -1,0 +1,40 @@
+[
+  {
+    "name": "AAA-nonPXgrid-Configuration",
+    "description": "AAA configuration is to be applied if UI Settings are not to be used. Designed to be utilized as an extension file.",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      },
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9200 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{% extends \"DNAC-Templates-Samples/Security-AAA-Modifications\" %}\n!\n{% block aaa-configuration %}\n{#- aaa configuration if required -#}\n!\nauthentication convert-to new-style\naaa new-model\naaa session-id common\n!\n{% endblock %}\n!\n{% block radius-configuration %}\n{#- RADIUS configuration if required -#}\n!\n{#- Radius Server configuration #}\naaa group server radius dnac-client-radius-group\n server name dnac-radius_{{ AaaIpAddress }}\n ip radius source-interface {{ MgmtVlan }}\n exit\n!\naaa server radius dynamic-author\n client {{ AaaIpAddress }} server-key {{ AaaRadiusSecret }} \n exit\n!\n{#- AAA Radius configuration #}\naaa accounting identity default start-stop group dnac-client-radius-group\naaa accounting update newinfo periodic 2880\naaa authorization network default group dnac-client-radius-group\naaa authorization network dnac-cts-list group dnac-client-radius-group\naaa authorization exec default local\naaa authentication login default local\naaa authentication dot1x default group dnac-client-radius-group\naaa authentication login dnac-cts-list group dnac-client-radius-group local\n!\n{#- Radius configuration #}\nradius server dnac-radius_{{ AaaIpAddress }}\n address ipv4 {{ AaaIpAddress }} auth-port 1812 acct-port 1813\n pac key {{ AaaCtsPacKey }} \n retransmit 3\n timeout 4\n automate-tester username dummy ignore-acct-port probe-on\n exit\n!\nradius-server vsa send authentication\nradius-server vsa send accounting\nradius-server dead-criteria time 5 tries 3\nradius-server deadtime 3\nradius-server attribute 31 send nas-port-detail mac-only\nradius-server attribute 31 mac format ietf upper-case\nradius-server attribute 8 include-in-access-req\nradius-server attribute 25 access-request include\nradius-server attribute 6 on-for-login-auth\nradius-server attribute 6 support-multiple\n!\n{#- Radius source interfaces configuration #}\nip radius source-interface {{ MgmtVlan }}\n!\ndot1x system-auth-control\ncts authorization list dnac-cts-list\n!\n{#- Radius Dot1x WWW for Guest configuration #}\nip http server\nip http max-connections 16\nip http secure-server\n!\nip access-list extended ACL_WEBAUTH_REDIRECT\n 40 deny ip any host {{ AaaIpAddress }}\n 500 permit tcp any any eq www\n 600 permit tcp any any eq 443\n 700 permit tcp any any eq 8443\n 800 deny udp any any eq domain\n 900 deny udp any eq bootpc any eq bootps\n exit\n!\nip domain lookup source-interface {{ MgmtVlan }}\n!\n{% endblock %}\n!\n{% block tacacs-configuration %}\n{#- TACACS Server configuration #}\ntacacs server dnac-tacacs_{{ AaaIpAddress }}\n address ipv4 {{ AaaIpAddress }}\n key {{ AaaTacacsSecret }} \n timeout 4\n exit\n!\naaa group server tacacs+ dnac-network-tacacs-group\n server name dnac-tacacs_{{ AaaIpAddress }}\n exit\n!\naaa accounting exec default start-stop group dnac-network-tacacs-group\naaa authorization exec VTY_author group dnac-network-tacacs-group local if-authenticated\naaa authentication login VTY_authen group dnac-network-tacacs-group local\n!\n{#- source interfaces configuration #}\nip tacacs source-interface {{ MgmtVlan }}\n!\n{#- Console & VTY configuration #}\nline con 0\n exec-timeout 15 0\n login authentication VTY_authen\n logging synchronous\n authorization exec VTY_author\n!\nline vty 0 15\n access-class 12 in\n exec-timeout 15 0\n login authentication VTY_authen\n logging synchronous\n authorization exec VTY_author\n transport input ssh\n{% endblock %}\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{% extends \"DNAC-Templates-Samples/Security-AAA-Modifications\" %}\n!\n{% block aaa-configuration %}\n{#- aaa configuration if required -#}\n!\nauthentication convert-to new-style\naaa new-model\naaa session-id common\n!\n{% endblock %}\n!\n{% block radius-configuration %}\n{#- RADIUS configuration if required -#}\n!\n{#- Radius Server configuration #}\naaa group server radius dnac-client-radius-group\n server name dnac-radius_{{ AaaIpAddress }}\n ip radius source-interface {{ MgmtVlan }}\n exit\n!\naaa server radius dynamic-author\n client {{ AaaIpAddress }} server-key {{ AaaRadiusSecret }} \n exit\n!\n{#- AAA Radius configuration #}\naaa accounting identity default start-stop group dnac-client-radius-group\naaa accounting update newinfo periodic 2880\naaa authorization network default group dnac-client-radius-group\naaa authorization network dnac-cts-list group dnac-client-radius-group\naaa authorization exec default local\naaa authentication login default local\naaa authentication dot1x default group dnac-client-radius-group\naaa authentication login dnac-cts-list group dnac-client-radius-group local\n!\n{#- Radius configuration #}\nradius server dnac-radius_{{ AaaIpAddress }}\n address ipv4 {{ AaaIpAddress }} auth-port 1812 acct-port 1813\n pac key {{ AaaCtsPacKey }} \n retransmit 3\n timeout 4\n automate-tester username dummy ignore-acct-port probe-on\n exit\n!\nradius-server vsa send authentication\nradius-server vsa send accounting\nradius-server dead-criteria time 5 tries 3\nradius-server deadtime 3\nradius-server attribute 31 send nas-port-detail mac-only\nradius-server attribute 31 mac format ietf upper-case\nradius-server attribute 8 include-in-access-req\nradius-server attribute 25 access-request include\nradius-server attribute 6 on-for-login-auth\nradius-server attribute 6 support-multiple\n!\n{#- Radius source interfaces configuration #}\nip radius source-interface {{ MgmtVlan }}\n!\ndot1x system-auth-control\ncts authorization list dnac-cts-list\n!\n{#- Radius Dot1x WWW for Guest configuration #}\nip http server\nip http max-connections 16\nip http secure-server\n!\nip access-list extended ACL_WEBAUTH_REDIRECT\n 40 deny ip any host {{ AaaIpAddress }}\n 500 permit tcp any any eq www\n 600 permit tcp any any eq 443\n 700 permit tcp any any eq 8443\n 800 deny udp any any eq domain\n 900 deny udp any eq bootpc any eq bootps\n exit\n!\nip domain lookup source-interface {{ MgmtVlan }}\n!\n{% endblock %}\n!\n{% block tacacs-configuration %}\n{#- TACACS Server configuration #}\ntacacs server dnac-tacacs_{{ AaaIpAddress }}\n address ipv4 {{ AaaIpAddress }}\n key {{ AaaTacacsSecret }} \n timeout 4\n exit\n!\naaa group server tacacs+ dnac-network-tacacs-group\n server name dnac-tacacs_{{ AaaIpAddress }}\n exit\n!\naaa accounting exec default start-stop group dnac-network-tacacs-group\naaa authorization exec VTY_author group dnac-network-tacacs-group local if-authenticated\naaa authentication login VTY_authen group dnac-network-tacacs-group local\n!\n{#- source interfaces configuration #}\nip tacacs source-interface {{ MgmtVlan }}\n!\n{#- Console & VTY configuration #}\nline con 0\n exec-timeout 15 0\n login authentication VTY_authen\n logging synchronous\n authorization exec VTY_author\n!\nline vty 0 15\n access-class 12 in\n exec-timeout 15 0\n login authentication VTY_authen\n logging synchronous\n authorization exec VTY_author\n transport input ssh\n{% endblock %}\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1675183238353,
+    "lastUpdateTime": 1675552397329,
+    "latestVersionTime": 1675552404480,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "8de648bf-55a7-42ef-9eb8-38f0aef0833f",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

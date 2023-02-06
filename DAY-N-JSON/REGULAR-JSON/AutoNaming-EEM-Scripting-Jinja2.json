@@ -1,0 +1,36 @@
+[
+  {
+    "name": "AutoNaming-EEM-Scripting",
+    "description": "This configuration automatically adds descriptions to interfaces with connected device information. It includes a self-deleting EEM script to initially clear the CDP and LLDP table",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{#- Automated Uplink Description Script -#}\n{#- This will always ensure the uplink descriptions are correct to upstream -#}\n{#- Switches within the infrastructure  -#}\n event manager applet update-port\n  event neighbor-discovery interface regexp GigabitEthernet.* cdp add\n  action 101 regexp \"(Switch|Router)\" \"$_nd_cdp_capabilities_string\"\n  action 200 if $_regexp_result eq \"1\"\n  action 201  regexp \"(Trans-Bridge)\" \"$_nd_cdp_capabilities_string\"\n  action 210  if $_regexp_result eq \"1\"\n  action 211   cli command \"enable\"\n  action 212   cli command \"config t\"\n  action 213   cli command \"interface $_nd_local_intf_name\"\n  action 214   regexp \"^([^\\.]+)\" \"$_nd_cdp_entry_name\" match host\n  action 215   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 216   cli command \"no description\"\n  action 217   cli command \"description AP - $host - $connectedport\"\n  action 220  else\n  action 221   cli command \"enable\"\n  action 222   cli command \"config t\"\n  action 223   cli command \"interface $_nd_local_intf_name\"\n  action 224   regexp \"^([^\\.]+)\\.\" \"$_nd_cdp_entry_name\" match host\n  action 225   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 226   cli command \"no description\"\n  action 227   cli command \"description Link - $host - $connectedport\"\n  action 240  end\n  action 250 else\n  action 251  regexp \"(Phone)\" \"$_nd_cdp_capabilities_string\"\n  action 252  if $_regexp_result eq \"1\"\n  action 253   cli command \"enable\"\n  action 254   cli command \"config t\"\n  action 255   cli command \"interface $_nd_local_intf_name\"\n  action 256   regexp \"^([^\\.]+)\" \"$_nd_cdp_entry_name\" match host\n  action 257   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 258   cli command \"no description\"\n  action 259   cli command \"description Phone - $host - $connectedport\"\n  action 260  end\n  action 270 end\n  action 280 cli command \"write\"\n!\nevent manager applet POST_PNP\n event timer countdown time 30\n action 1.0 cli command \"enable\"\n action 1.1 cli command \"clear cdp table\"\n action 2.0 cli command \"config t\"\n action 2.1 cli command \"no event manager applet POST_PNP\"\n action 2.2 cli command \"end\"\n action 2.3 cli command \"wr\"\n action 2.4 cli command \"exit\"",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{#- Automated Uplink Description Script -#}\n{#- This will always ensure the uplink descriptions are correct to upstream -#}\n{#- Switches within the infrastructure  -#}\n event manager applet update-port\n  event neighbor-discovery interface regexp GigabitEthernet.* cdp add\n  action 101 regexp \"(Switch|Router)\" \"$_nd_cdp_capabilities_string\"\n  action 200 if $_regexp_result eq \"1\"\n  action 201  regexp \"(Trans-Bridge)\" \"$_nd_cdp_capabilities_string\"\n  action 210  if $_regexp_result eq \"1\"\n  action 211   cli command \"enable\"\n  action 212   cli command \"config t\"\n  action 213   cli command \"interface $_nd_local_intf_name\"\n  action 214   regexp \"^([^\\.]+)\" \"$_nd_cdp_entry_name\" match host\n  action 215   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 216   cli command \"no description\"\n  action 217   cli command \"description AP - $host - $connectedport\"\n  action 220  else\n  action 221   cli command \"enable\"\n  action 222   cli command \"config t\"\n  action 223   cli command \"interface $_nd_local_intf_name\"\n  action 224   regexp \"^([^\\.]+)\\.\" \"$_nd_cdp_entry_name\" match host\n  action 225   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 226   cli command \"no description\"\n  action 227   cli command \"description Link - $host - $connectedport\"\n  action 240  end\n  action 250 else\n  action 251  regexp \"(Phone)\" \"$_nd_cdp_capabilities_string\"\n  action 252  if $_regexp_result eq \"1\"\n  action 253   cli command \"enable\"\n  action 254   cli command \"config t\"\n  action 255   cli command \"interface $_nd_local_intf_name\"\n  action 256   regexp \"^([^\\.]+)\" \"$_nd_cdp_entry_name\" match host\n  action 257   regexp \"^([^\\.]+)\" \"$_nd_port_id\" match connectedport\n  action 258   cli command \"no description\"\n  action 259   cli command \"description Phone - $host - $connectedport\"\n  action 260  end\n  action 270 end\n  action 280 cli command \"write\"\n!\nevent manager applet POST_PNP\n event timer countdown time 30\n action 1.0 cli command \"enable\"\n action 1.1 cli command \"clear cdp table\"\n action 2.0 cli command \"config t\"\n action 2.1 cli command \"no event manager applet POST_PNP\"\n action 2.2 cli command \"end\"\n action 2.3 cli command \"wr\"\n action 2.4 cli command \"exit\"",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1675029538674,
+    "lastUpdateTime": 1675547249985,
+    "latestVersionTime": 1675547255836,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "ff182190-f890-49f3-b09a-a27494cedf5c",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

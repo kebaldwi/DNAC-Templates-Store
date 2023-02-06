@@ -1,0 +1,36 @@
+[
+  {
+    "name": "DynamicPort-EEM-Scripting",
+    "description": "This configuration is designed to be used when it is required to change between 802.1x authentication policies from closed to low-impact mode.",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{#- Dynamic Port EEM Description Script -#}\n{#- This will always ensure the compliant port configurations on interfaces -#}\n{#- Switches within the infrastructure -#}\nevent manager applet DETECT_SW_INT_DOWN\n event syslog pattern \"%LINK.* Interface.* changed state to .* down\"\n action 10     regexp \"Interface ([^ ]+),\" \"$_syslog_msg\" match intf\n action 20     cli command \"enable\"\n action 30     cli command \"show run interface $intf | inc channel-group mode\"\n action 40     regexp \"(^channel-group)\" \"$_cli_result\"\n action 50     if $_regexp_result ne \"1\"\n action 50.10  puts \"AP Trunk Interface DOWN. INSTALL BASECONFIG on Interface $intf\"\n action 50.11  cli command \"enable\"\n action 50.12  cli command \"conf t\"\n action 50.13  cli command \"default interface $intf\"\n action 50.14  cli command \"interface $intf\"\n action 50.15  cli command \" access-session inherit disable interface-template-sticky\"\n action 50.16  cli command \"default interface $intf\"\n action 50.17  cli command \"interface $intf\"\n action 50.18  cli command \" description BASE CONFIG\"\n action 50.20  cli command \" switchport mode access\"\n action 50.23  cli command \" device-tracking attach-policy IPDT_POLICY\"\n action 50.24  cli command \" snmp trap mac-notification change added\"\n action 50.25  cli command \" snmp trap mac-notification change removed\"\n action 50.26  cli command \" source template WORKSTATION\"\n action 50.27  cli command \" spanning-tree portfast\"\n action 50.28  cli command \" spanning-tree bpduguard enable\"\n action 60     else\n action 70     puts \"Non-EMM port Interface $intf went down.\"\n action 80     end\n action 90     cli command \"write\"\n action 99     cli command \"exit\"\n!\nevent manager applet DETECT_SW_IEEE_POE_UP\n event syslog pattern \"%.*POWER.*GRANTED.* Interface.*\"\n action 10     regexp \"Interface ([^ ]+):\" \"$_syslog_msg\" match intf\n action 20     cli command \"enable\"\n action 30     cli command \"show run interface $intf | inc channel-group mode\"\n action 40     regexp \"(^channel-group)\" \"$_cli_result\"\n action 50     if $_regexp_result ne \"1\"\n action 50.10  puts \"POE Device Detected. INSTALL LOWIMPACT on Interface $intf\"\n action 50.11  cli command \"enable\"\n action 50.12  cli command \"conf t\"\n action 50.13  cli command \"default interface $intf\"\n action 50.14  cli command \"interface $intf\"\n action 50.15  cli command \" description AP CONFIG\"\n action 50.16  cli command \" switchport access vlan 10\"\n action 50.17  cli command \" switchport mode access\"\n action 50.20  cli command \" device-tracking attach-policy IPDT_POLICY\"\n action 50.21  cli command \" snmp trap mac-notification change added\"\n action 50.22  cli command \" snmp trap mac-notification change removed\"\n action 50.23  cli command \" source template ACCESS_POINT\"\n action 50.24  cli command \" spanning-tree portfast\"\n action 50.25  cli command \" spanning-tree bpduguard enable\"\n action 80     end\n action 90     cli command \"write\"\n action 99     cli command \"exit\"\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{#- Dynamic Port EEM Description Script -#}\n{#- This will always ensure the compliant port configurations on interfaces -#}\n{#- Switches within the infrastructure -#}\nevent manager applet DETECT_SW_INT_DOWN\n event syslog pattern \"%LINK.* Interface.* changed state to .* down\"\n action 10     regexp \"Interface ([^ ]+),\" \"$_syslog_msg\" match intf\n action 20     cli command \"enable\"\n action 30     cli command \"show run interface $intf | inc channel-group mode\"\n action 40     regexp \"(^channel-group)\" \"$_cli_result\"\n action 50     if $_regexp_result ne \"1\"\n action 50.10  puts \"AP Trunk Interface DOWN. INSTALL BASECONFIG on Interface $intf\"\n action 50.11  cli command \"enable\"\n action 50.12  cli command \"conf t\"\n action 50.13  cli command \"default interface $intf\"\n action 50.14  cli command \"interface $intf\"\n action 50.15  cli command \" access-session inherit disable interface-template-sticky\"\n action 50.16  cli command \"default interface $intf\"\n action 50.17  cli command \"interface $intf\"\n action 50.18  cli command \" description BASE CONFIG\"\n action 50.20  cli command \" switchport mode access\"\n action 50.23  cli command \" device-tracking attach-policy IPDT_POLICY\"\n action 50.24  cli command \" snmp trap mac-notification change added\"\n action 50.25  cli command \" snmp trap mac-notification change removed\"\n action 50.26  cli command \" source template WORKSTATION\"\n action 50.27  cli command \" spanning-tree portfast\"\n action 50.28  cli command \" spanning-tree bpduguard enable\"\n action 60     else\n action 70     puts \"Non-EMM port Interface $intf went down.\"\n action 80     end\n action 90     cli command \"write\"\n action 99     cli command \"exit\"\n!\nevent manager applet DETECT_SW_IEEE_POE_UP\n event syslog pattern \"%.*POWER.*GRANTED.* Interface.*\"\n action 10     regexp \"Interface ([^ ]+):\" \"$_syslog_msg\" match intf\n action 20     cli command \"enable\"\n action 30     cli command \"show run interface $intf | inc channel-group mode\"\n action 40     regexp \"(^channel-group)\" \"$_cli_result\"\n action 50     if $_regexp_result ne \"1\"\n action 50.10  puts \"POE Device Detected. INSTALL LOWIMPACT on Interface $intf\"\n action 50.11  cli command \"enable\"\n action 50.12  cli command \"conf t\"\n action 50.13  cli command \"default interface $intf\"\n action 50.14  cli command \"interface $intf\"\n action 50.15  cli command \" description AP CONFIG\"\n action 50.16  cli command \" switchport access vlan 10\"\n action 50.17  cli command \" switchport mode access\"\n action 50.20  cli command \" device-tracking attach-policy IPDT_POLICY\"\n action 50.21  cli command \" snmp trap mac-notification change added\"\n action 50.22  cli command \" snmp trap mac-notification change removed\"\n action 50.23  cli command \" source template ACCESS_POINT\"\n action 50.24  cli command \" spanning-tree portfast\"\n action 50.25  cli command \" spanning-tree bpduguard enable\"\n action 80     end\n action 90     cli command \"write\"\n action 99     cli command \"exit\"\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1675030051621,
+    "lastUpdateTime": 1675547501876,
+    "latestVersionTime": 1675547508281,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "17752ba6-aadf-471f-b5b5-68a258227af0",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

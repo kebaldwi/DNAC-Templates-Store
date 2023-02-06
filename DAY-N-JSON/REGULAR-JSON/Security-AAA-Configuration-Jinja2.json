@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Security-AAA-Configuration",
+    "description": "Extraneous AAA Configurations ",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# Additional AAA commands not added by DNA Center Automation #}\n{# aaa authorization config-commands #}\n{# aaa authorization commands 0 default group tacacs+ local  #}\n{# aaa authorization commands 1 default group tacacs+ local  #}\n{# aaa authorization commands 15 default group tacacs+ local  #}\n!\n{# Default Parameters #}\n{# ip arp entry learn 10240 #}\nip domain retry 1\nip domain timeout 5\nlogin on-success log\nip forward-protocol nd\nno ip http server\nno ip http authentication local\nno ip http secure-server\nip ssh version 2\n!\n{# Banner Configuration #}\n<MLTCMD>\nbanner login ^\n ******************************************************************\n * CISCO SYSTEMS EXAMPLE                                          *\n ******************************************************************\n *                                                                *\n * THIS DEVICE IS PART OF A DEMONSTRATION COMPUTER NETWORK AND IS *\n * PROVIDED FOR OFFICIAL USE BY AUTHORIZED USERS ONLY. ANY        *\n * INFORMATION, DOCUMENTS, OR MATERIALS IN THE NETWORK ARE THE    *\n * PROPERTY OF THIS FIRM. UNAUTHORIZED USE, DUPLICATION, OR       *\n * DISCLOSURE OF INFORMATION OR SYSTEMS IN THIS NETWORK IS        *\n * STRICTLY PROHIBITED BY FEDERAL LAW (18 USC 10130). USE OF THIS *\n * NETWORK CONSTITUTES CONSENT TO MONITORING WHICH MAY BE         *\n * RELEASED TO FIRM MANAGEMENT AND/OR LAW ENFORCEMENT AGENCIES    *\n * AND MAY RESULT IN DISCIPLINARY ACTION, CIVIL ACTION, AND/OR    *\n * CRIMINAL OR CIVIL LITIGATION.                                  *\n *                                                                *\n ******************************************************************\n   Hostname: $(hostname)\n ******************************************************************\n * CISCO SYSTEMS EXAMPLE *\n ******************************************************************\n ^\n</MLTCMD>\n!\nnetconf-yang\n!\n{# VTY and Console Line Modifications #}\nline con 0\n exec-timeout 0 0\n logging synchronous\n stopbits 1\nline vty 0 15\n {# access-class 20 in #}\n exec-timeout 30 0\n {# timeout login response 300 #}\n {# transport input ssh #}\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# Additional AAA commands not added by DNA Center Automation #}\n{# aaa authorization config-commands #}\n{# aaa authorization commands 0 default group tacacs+ local  #}\n{# aaa authorization commands 1 default group tacacs+ local  #}\n{# aaa authorization commands 15 default group tacacs+ local  #}\n!\n{# Default Parameters #}\n{# ip arp entry learn 10240 #}\nip domain retry 1\nip domain timeout 5\nlogin on-success log\nip forward-protocol nd\nno ip http server\nno ip http authentication local\nno ip http secure-server\nip ssh version 2\n!\n{# Banner Configuration #}\n<MLTCMD>\nbanner login ^\n ******************************************************************\n * CISCO SYSTEMS EXAMPLE                                          *\n ******************************************************************\n *                                                                *\n * THIS DEVICE IS PART OF A DEMONSTRATION COMPUTER NETWORK AND IS *\n * PROVIDED FOR OFFICIAL USE BY AUTHORIZED USERS ONLY. ANY        *\n * INFORMATION, DOCUMENTS, OR MATERIALS IN THE NETWORK ARE THE    *\n * PROPERTY OF THIS FIRM. UNAUTHORIZED USE, DUPLICATION, OR       *\n * DISCLOSURE OF INFORMATION OR SYSTEMS IN THIS NETWORK IS        *\n * STRICTLY PROHIBITED BY FEDERAL LAW (18 USC 10130). USE OF THIS *\n * NETWORK CONSTITUTES CONSENT TO MONITORING WHICH MAY BE         *\n * RELEASED TO FIRM MANAGEMENT AND/OR LAW ENFORCEMENT AGENCIES    *\n * AND MAY RESULT IN DISCIPLINARY ACTION, CIVIL ACTION, AND/OR    *\n * CRIMINAL OR CIVIL LITIGATION.                                  *\n *                                                                *\n ******************************************************************\n   Hostname: $(hostname)\n ******************************************************************\n * CISCO SYSTEMS EXAMPLE *\n ******************************************************************\n ^\n</MLTCMD>\n!\nnetconf-yang\n!\n{# VTY and Console Line Modifications #}\nline con 0\n exec-timeout 0 0\n logging synchronous\n stopbits 1\nline vty 0 15\n {# access-class 20 in #}\n exec-timeout 30 0\n {# timeout login response 300 #}\n {# transport input ssh #}\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1674762318519,
+    "lastUpdateTime": 1675550399797,
+    "latestVersionTime": 1674762318519,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "2726ce72-921a-47ab-bcca-8cd519cfb749",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]

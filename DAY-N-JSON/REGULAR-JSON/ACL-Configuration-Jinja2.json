@@ -1,0 +1,36 @@
+[
+  {
+    "name": "ACL-Configuration",
+    "description": "Configurations for ACLs - includes Objects, configuration examples for pragmatic approaches, and standard approaches",
+    "tags": [],
+    "deviceTypes": [
+      {
+        "productFamily": "Switches and Hubs",
+        "productSeries": "Cisco Catalyst 9300 Series Switches"
+      }
+    ],
+    "softwareType": "IOS",
+    "softwareVariant": "XE",
+    "templateContent": "{# Dictionaries of VLANS per Site #}\n{% set MgmtAceEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'},\n  {'entry':'40','rule':'permit','range':'10.20.0.0','mask':'0.0.0.255'}\n  ]%}\n{% set VtyAccessAceEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'},\n  {'entry':'40','rule':'permit','range':'10.20.0.0','mask':'0.0.0.255'},\n  {'entry':'50','rule':'permit','range':'10.30.0.0','mask':'0.0.0.255'},\n  {'entry':'60','rule':'permit','range':'10.40.0.0','mask':'0.0.0.255'}\n  ]%}\n{% set AclDefaultEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'}\n  ]%}\n\n{# ACLs Standard Macro - Pragmatically Build Standard ACL from Object #}\n{% macro StandardAcl(name,lists) %}\n  ip access-list standard {{ name }}\n  {% for list in lists %}\n    {{ list['entry'] }} {{ list['rule'] }} {{ list['range'] }} {{ list['mask'] }}\n  {% endfor %}\n{% endmacro %}\n\n{# ACLs Extended Macro - Pragmatically Build Extended ACL from Object #}\n{% macro ExtendedAcl(name,lists) %}\n  ip access-list extended {{ name}}\n  {% for list in lists %}\n    {{ list.entry }} {{ list.rule }} {{ list.srange }} {{ list.smask }} {{ list.sport }} {{ list.drange }} {{ list.dmask }} {{ list.dport }}\n  {% endfor %}\n{% endmacro %}\n\n{# SNMP ACL #}\n{% macro StandardSnmpLineAcl() %}\n access-list 10 permit 10.10.0.100\n access-list 10 permit 10.20.0.200\n access-list 10 permit 10.10.0.0 0.0.0.255\n access-list 10 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# SNMP ACL - Named ACL #}\n{% macro StandardSnmpAcl() %}\nip access-list standard SNMP\n 10 permit 10.10.0.100\n 20 permit 10.20.0.200\n 30 permit 10.10.0.0 0.0.0.255\n 40 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# VTY ACL #}\n{% macro StandardVtyLineAcl() %}\n access-list 20 permit 10.10.0.100\n access-list 20 permit 10.20.0.200\n access-list 20 permit 10.10.0.0 0.0.0.255\n access-list 20 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# VTY ACL - Named ACL #}\n{% macro StandardVtyAcl() %}\nip access-list standard VTY\n 10 permit 10.10.0.100\n 20 permit 10.20.0.200\n 30 permit 10.10.0.0 0.0.0.255\n 40 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# The below example uses the macros above #}\n{{ StandardSnmpLineAcl() }}\n{{ StandardSnmpAcl() }}\n{{ StandardVtyLineAcl() }}\n{{ StandardVtyAcl() }}\n\n{# The below example uses the objects above and macros - Example in comments below #}\n{# ip access-list standard ACL-DEFAULT #}\n{#  10 permit any #}\n{{ StandardAcl(\"ACL-DEFAULT\",AclDefaultEntries) }}\n",
+    "rollbackTemplateContent": "",
+    "templateParams": [],
+    "rollbackTemplateParams": [],
+    "composite": false,
+    "containingTemplates": [],
+    "language": "JINJA",
+    "promotedTemplateContent": "{# Dictionaries of VLANS per Site #}\n{% set MgmtAceEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'},\n  {'entry':'40','rule':'permit','range':'10.20.0.0','mask':'0.0.0.255'}\n  ]%}\n{% set VtyAccessAceEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'},\n  {'entry':'40','rule':'permit','range':'10.20.0.0','mask':'0.0.0.255'},\n  {'entry':'50','rule':'permit','range':'10.30.0.0','mask':'0.0.0.255'},\n  {'entry':'60','rule':'permit','range':'10.40.0.0','mask':'0.0.0.255'}\n  ]%}\n{% set AclDefaultEntries = [\n  {'entry':'10','rule':'permit','range':'10.10.0.100','mask':'0.0.0.0'},\n  {'entry':'20','rule':'permit','range':'10.10.0.200','mask':'0.0.0.0'},\n  {'entry':'30','rule':'permit','range':'10.10.0.0','mask':'0.0.0.255'}\n  ]%}\n\n{# ACLs Standard Macro - Pragmatically Build Standard ACL from Object #}\n{% macro StandardAcl(name,lists) %}\n  ip access-list standard {{ name }}\n  {% for list in lists %}\n    {{ list['entry'] }} {{ list['rule'] }} {{ list['range'] }} {{ list['mask'] }}\n  {% endfor %}\n{% endmacro %}\n\n{# ACLs Extended Macro - Pragmatically Build Extended ACL from Object #}\n{% macro ExtendedAcl(name,lists) %}\n  ip access-list extended {{ name}}\n  {% for list in lists %}\n    {{ list.entry }} {{ list.rule }} {{ list.srange }} {{ list.smask }} {{ list.sport }} {{ list.drange }} {{ list.dmask }} {{ list.dport }}\n  {% endfor %}\n{% endmacro %}\n\n{# SNMP ACL #}\n{% macro StandardSnmpLineAcl() %}\n access-list 10 permit 10.10.0.100\n access-list 10 permit 10.20.0.200\n access-list 10 permit 10.10.0.0 0.0.0.255\n access-list 10 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# SNMP ACL - Named ACL #}\n{% macro StandardSnmpAcl() %}\nip access-list standard SNMP\n 10 permit 10.10.0.100\n 20 permit 10.20.0.200\n 30 permit 10.10.0.0 0.0.0.255\n 40 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# VTY ACL #}\n{% macro StandardVtyLineAcl() %}\n access-list 20 permit 10.10.0.100\n access-list 20 permit 10.20.0.200\n access-list 20 permit 10.10.0.0 0.0.0.255\n access-list 20 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# VTY ACL - Named ACL #}\n{% macro StandardVtyAcl() %}\nip access-list standard VTY\n 10 permit 10.10.0.100\n 20 permit 10.20.0.200\n 30 permit 10.10.0.0 0.0.0.255\n 40 permit 10.20.0.0 0.0.0.255\n{% endmacro %}\n!\n{# The below example uses the macros above #}\n{{ StandardSnmpLineAcl() }}\n{{ StandardSnmpAcl() }}\n{{ StandardVtyLineAcl() }}\n{{ StandardVtyAcl() }}\n\n{# The below example uses the objects above and macros - Example in comments below #}\n{# ip access-list standard ACL-DEFAULT #}\n{#  10 permit any #}\n{{ StandardAcl(\"ACL-DEFAULT\",AclDefaultEntries) }}\n",
+    "promotedTemplateParams": [],
+    "customParamsOrder": false,
+    "createTime": 1674762318782,
+    "lastUpdateTime": 1675550118964,
+    "latestVersionTime": 1674762318782,
+    "validationErrors": {
+      "templateErrors": [],
+      "rollbackTemplateErrors": [],
+      "templateId": "92449c24-cd1e-4ee7-9a57-a025ab5a6393",
+      "templateVersion": null
+    },
+    "projectAssociated": true,
+    "documentDatabase": false
+  }
+]
