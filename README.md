@@ -14,6 +14,6 @@ Please use this menu to navigate the various sections of this separate [DNAC Tem
 
 ## Network Automation Community
 
-This community will use the forum located on this repository to explain their examples and provide links to shared content within this part of the repository.
+This community will use the forum on this repository to explain their examples and provide links to shared content within this part.
 
-To join all you have to do is email me, [kebaldwi@cisco.com](mailto:kebaldwi@cisco.com) and then when you have been added push code to this repository, and write a short post on the [Forum]() here.
+To join, all you have to do is email me, [kebaldwi@cisco.com](mailto:kebaldwi@cisco.com) and then when you have added push code to this repository, and write a short post on the [Forum](https://github.com/kebaldwi/DNAC-Templates-Store/wiki) here.
