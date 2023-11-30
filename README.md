@@ -5,9 +5,15 @@ Please maintain the directory structure with submissions. If you have a suggesti
 
 Please use this menu to navigate the various sections of this separate [DNAC Templates Store](https://github.com/kebaldwi/DNAC-Templates-Store) Github repository. Within the multiple folders are examples, explanation readme files for reference.
 
+* [Community Examples](./Community-Examples/README.md) - Templates from the community which will each have a dedicated page
 * [RAW TEXT Examples](https://github.com/kebaldwi/DNAC-Templates-Store/tree/main/RAW-TEXT-EXAMPLES) - Templates in raw text for editing
 * [DAY ZERO JSON](https://github.com/kebaldwi/DNAC-Templates-Store/tree/main/DAY-ZERO-JSON) - JSON files for easy import to DNA Center for Day Zero
 * [DAY N JSON](https://github.com/kebaldwi/DNAC-Templates-Store/tree/main/DAY-N-JSON) - JSON files for easy import to DNA Center for Day N
 * [REGULAR JSON](https://github.com/kebaldwi/DNAC-Templates-Store/tree/main/DAY-N-JSON/REGULAR-JSON) - JSON files for easy import to DNA Center for Day N
 * [COMPOSITE JSON](https://github.com/kebaldwi/DNAC-Templates-Store/tree/main/DAY-N-JSON/COMPOSITE-JSON) - JSON files for easy import to DNA Center for Day N
 
+## Network Automation Community
+
+This community will use the forum located on this repository to explain their examples and provide links to shared content within this part of the repository.
+
+To join all you have to do is email me, [kebaldwi@cisco.com](mailto:kebaldwi@cisco.com) and then when you have been added push code to this repository, and write a short post on the [Forum]() here.
